@@ -17,10 +17,10 @@ range_max = int(range_max_text)
 
 if range_min == range_max:
     print('Minimum and Maximum values of Range should be different')
-    quit()
+    exit(1)
 elif range_min > range_max:
     print('Range Minimum should be less than Range Maximum value')
-    quit()
+    exit(2)
 else:
     print('Valid inputs are provided by the user')
 
@@ -33,9 +33,6 @@ df_train = pd.DataFrame.from_records(random_train_integers)
 file_train = open("training_numbers.csv", "w+")
 if file_train == "":
     print('File creation failed')
-    quit()
-
-
 df_train.to_csv("training_numbers.csv", ",")
 
 print("We're generating test data set")
@@ -51,10 +48,11 @@ range_max = int(range_max_text)
 
 if range_min == range_max:
     print('Minimum and Maximum values of Range should be different')
-    quit()
+    exit(1)
+
 elif range_min > range_max:
     print('Range Minimum should be less than Range Maximum value')
-    quit()
+    exit(2)
 else:
     print('Valid inputs are provided by the user')
 
@@ -67,7 +65,5 @@ df_test = pd.DataFrame.from_records(random_test_integers)
 file_test = open("testing_numbers.csv", "w+")
 if file_test == "":
     print('File creation failed')
-    quit()
-
-
+    exit(3)
 df_test.to_csv("testing_numbers.csv", ",")

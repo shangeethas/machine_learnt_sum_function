@@ -5,8 +5,6 @@
 import os.path
 import pandas as pd
 import numpy as np
-import scipy as sp
-
 
 
 class Model:
@@ -21,17 +19,15 @@ class Model:
 
 
 print('We are generating a model with training data set')
-# directory_name = input('Enter training data set directory name :')
-directory_name = '.'
+directory_name = input('Enter training data set directory name :')
 if not os.path.realpath(directory_name):
     print('Invalid directory path specified')
-    quit()
+    exit(4)
 
-# file_name = input('Enter training data set file name : ')
-file_name = 'training_numbers.csv'
+file_name = input('Enter training data set file name : ')
 if not os.path.isfile(file_name):
     print('Invalid file name specified')
-    quit()
+    exit(5)
 
 file_str = os.path.join(directory_name, file_name)
 print('Generated file string : ', file_str)

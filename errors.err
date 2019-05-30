@@ -1,0 +1,14 @@
+Err_Code = 1
+Err_Str = 'Minimum and Maximum values of Range should be different'
+
+Err_Code = 2
+Err_Str = 'Range Minimum should be less than Range Maximum value'
+
+Err_Code = 3
+Err_Str = 'File Creation Failed'
+
+Err_Code = 4
+Err_Str = 'Invalid directory path specified'
+
+Err_Code = 5
+Err_Str = 'Invalid file name specified'
