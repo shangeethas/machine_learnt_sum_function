@@ -4,18 +4,9 @@
 # libraries
 import os.path
 import pandas as pd
-import numpy as np
-
-
-class Model:
-    def __init__(self, coefficient_i, coefficient_j, coefficient_k):
-        print("This is the constructor method.")
-        self.a = coefficient_i
-        self.b = coefficient_j
-        self.c = coefficient_k
-
-    def get_sum(self, i, j, k):
-        return self.a * i + self.b * j + self.c * k
+from sklearn import linear_model
+from keras.models import Sequential
+from keras.layers import Dense
 
 
 print('We are generating a model with training data set')
@@ -34,26 +25,27 @@ print('Generated file string : ', file_str)
 
 df = pd.read_csv(file_str)
 print("Training Data Shape : ", df.shape)
+print("Training Data Size : ", df.size)
+print("Training Data Row Count : ", df['a'].count)
 
-error_sum = 0
-model = Model(1, 1, 1)
+d = {'a': df['a'], 'b': df['b'], 'c': df['c']}
+X = pd.DataFrame(data=d)
 
-for _ in range(df.size):
-    # ground truth
-    i = np.random.choice(df['0'])
-    j = np.random.choice(df['0'])
-    k = np.random.choice(df['0'])
-    y_actual = i + j + k
-    print('i : {}, j:{}, k:{}, y_actual:{}'.format(i, j, k, y_actual))
+Y = df['y']
+reg = linear_model.LinearRegression()
+reg.fit(X, Y)
+print('Intercept: \n', reg.intercept_)
+print('Coefficients: \n', reg.coef_)
 
-    y_model = model.get_sum(i, j, k)
 
-    # sum of errors
-    error = y_model - y_actual
-    error_sum_square = error_sum + error ^ 2
+model = Sequential()
+model.add(Dense(reg.intercept_, input_dim=8, kernel_initializer='uniform', activation='relu'))
+model.add(Dense(reg.coef_, kernel_initializer='uniform', activation='relu'))
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-mean_error_sum_square = error_sum_square / df.size
-print('Mean Error Sum Square : {}'.format(mean_error_sum_square))
-
-df_model = pd.DataFrame.from_records((1, 2, 3))
-df_model.to_hdf('store_tl.h5', 'table', append=True)
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+model.save_weights("model.h5")
+print("Saved model to disk")
