@@ -5,8 +5,8 @@
 import os.path
 import pandas as pd
 from sklearn import linear_model
-from keras.models import Sequential
-from keras.layers import Dense
+import h5py
+import numpy as np
 
 
 print('We are generating a model with training data set')
@@ -25,8 +25,6 @@ print('Generated file string : ', file_str)
 
 df = pd.read_csv(file_str)
 print("Training Data Shape : ", df.shape)
-print("Training Data Size : ", df.size)
-print("Training Data Row Count : ", df['a'].count)
 
 d = {'a': df['a'], 'b': df['b'], 'c': df['c']}
 X = pd.DataFrame(data=d)
@@ -34,18 +32,11 @@ X = pd.DataFrame(data=d)
 Y = df['y']
 reg = linear_model.LinearRegression()
 reg.fit(X, Y)
-print('Intercept: \n', reg.intercept_)
-print('Coefficients: \n', reg.coef_)
+intercept = reg.intercept_
+coefficients = reg.coef_
 
 
-model = Sequential()
-model.add(Dense(reg.intercept_, input_dim=8, kernel_initializer='uniform', activation='relu'))
-model.add(Dense(reg.coef_, kernel_initializer='uniform', activation='relu'))
-model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
-model_json = model.to_json()
-with open("model.json", "w") as json_file:
-    json_file.write(model_json)
-# serialize weights to HDF5
-model.save_weights("model.h5")
-print("Saved model to disk")
+h5f = h5py.File('model.hdf5', 'w')
+h5f.create_dataset('intercept', data=np.array(intercept))
+h5f.create_dataset('coefficients', data=np.array(coefficients))
+h5f.close()
